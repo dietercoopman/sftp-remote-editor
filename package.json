@@ -2,7 +2,7 @@
   "name": "sftp-remote-editor",
   "displayName": "SFTP Remote Editor",
   "description": "Edit files directly on your server over SFTP or FTPS. Browse the server in a side panel, open a file, change it and save: no local copy, no upload step. Uses your existing .vscode/sftp.json.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "delta-solutions",
   "author": "Delta Solutions",
   "license": "MIT",

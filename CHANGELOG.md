@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1
+
+- Marketplace listing: README rewritten with a hero image and screenshots of the panel, the save conflict check, the host key check and the comparison with the local project. No functional changes.
+
 ## 0.1.0
 
 Initial release.
