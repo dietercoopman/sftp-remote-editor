@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as tls from 'tls';
 import { parse as parseJsonc, ParseError, printParseErrorCode } from 'jsonc-parser';
+import { isServerColor, SERVER_COLORS, ServerColor } from './colors';
 import { log } from './util';
 
 export interface SftpConfig {
@@ -20,6 +21,8 @@ export interface SftpConfig {
   remotePath?: string;
   context?: string;
   connectTimeout?: number;
+  /** Color of the server in the panel, the editor tabs and the status bar, e.g. "red" for production. */
+  color?: string;
   /** FTP only: true = explicit FTPS (default), "implicit" = implicit FTPS, false = unencrypted FTP. */
   secure?: boolean | 'implicit' | 'control';
   /** FTP only: TLS options such as rejectUnauthorized, passed to Node's tls.connect. */
@@ -40,6 +43,10 @@ export interface ServerConfig {
   contextPath: string;
   remotePath: string;
   protocol: 'sftp' | 'ftp';
+  /** "color" from sftp.json, when it is one of the supported names. */
+  color?: ServerColor;
+  /** Location of this server's settings in sftp.json (the entry, or its profile), to write "color" back. */
+  jsonPath: (string | number)[];
   settings: SftpConfig;
   /** Serialized settings, to notice when a server's connection details changed. */
   fingerprint: string;
@@ -111,7 +118,8 @@ export async function loadServers(): Promise<{ servers: ServerConfig[]; problems
       continue;
     }
 
-    const entries = (Array.isArray(raw) ? raw : [raw]) as SftpConfig[];
+    const isArray = Array.isArray(raw);
+    const entries = (isArray ? raw : [raw]) as SftpConfig[];
     entries.forEach((entry, index) => {
       if (!entry || typeof entry !== 'object') return;
       const profiles = entry.profiles ?? {};
@@ -151,6 +159,14 @@ export async function loadServers(): Promise<{ servers: ServerConfig[]; problems
           );
         }
 
+        const colorName = typeof settings.color === 'string' ? settings.color.trim().toLowerCase() : undefined;
+        if (colorName && !isServerColor(colorName)) {
+          warnOnce(
+            `${cfgPath}#${index}#${profile}#color`,
+            `${display} (${name}): "color": "${settings.color}" is not supported. Use ${Object.keys(SERVER_COLORS).join(', ')}.`
+          );
+        }
+
         let id = slug(name);
         for (let n = 2; usedIds.has(id); n++) id = `${slug(name)}-${n}`;
         usedIds.add(id);
@@ -158,7 +174,8 @@ export async function loadServers(): Promise<{ servers: ServerConfig[]; problems
         const detail =
           `${settings.username ? settings.username + '@' : ''}${settings.host}` +
           (protocol === 'ftp' ? (settings.secure === false ? ' · ftp' : ' · ftps') : '');
-        const { profiles: _p, defaultProfile: _d, ...connection } = settings;
+        // The color is not part of the connection: changing it must not reconnect.
+        const { profiles: _p, defaultProfile: _d, color: _c, ...connection } = settings;
         servers.push({
           id,
           label: name,
@@ -168,6 +185,8 @@ export async function loadServers(): Promise<{ servers: ServerConfig[]; problems
           contextPath: path.resolve(folder.uri.fsPath, entry.context ?? '.'),
           remotePath: path.posix.normalize(settings.remotePath!),
           protocol: protocol as 'sftp' | 'ftp',
+          color: isServerColor(colorName) ? colorName : undefined,
+          jsonPath: [...(isArray ? [index] : []), ...(profile ? ['profiles', profile] : [])],
           settings,
           fingerprint: JSON.stringify(connection),
         });

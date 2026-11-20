@@ -2,7 +2,7 @@
   "name": "sftp-remote-editor",
   "displayName": "SFTP Remote Editor",
   "description": "Edit files directly on your server over SFTP or FTPS. Browse the server in a side panel, open a file, change it and save: no local copy, no upload step. Uses your existing .vscode/sftp.json.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "publisher": "delta-solutions",
   "author": "Delta Solutions",
   "license": "MIT",
@@ -36,7 +36,10 @@
     "edit on server",
     "remote host",
     "server",
-    "web development"
+    "web development",
+    "color",
+    "production",
+    "environment"
   ],
   "main": "./out/extension.js",
   "activationEvents": [
@@ -129,6 +132,12 @@
         "category": "SFTP Remote"
       },
       {
+        "command": "sftpRemoteEditor.setColor",
+        "title": "Set Color...",
+        "category": "SFTP Remote",
+        "icon": "$(symbol-color)"
+      },
+      {
         "command": "sftpRemoteEditor.disconnect",
         "title": "Disconnect",
         "category": "SFTP Remote",
@@ -172,6 +181,10 @@
         },
         {
           "command": "sftpRemoteEditor.disconnect",
+          "when": "false"
+        },
+        {
+          "command": "sftpRemoteEditor.setColor",
           "when": "false"
         }
       ],
@@ -247,6 +260,11 @@
           "command": "sftpRemoteEditor.disconnect",
           "when": "view == sftpRemoteEditor.servers && viewItem == server",
           "group": "5_view@2"
+        },
+        {
+          "command": "sftpRemoteEditor.setColor",
+          "when": "view == sftpRemoteEditor.servers && viewItem == server",
+          "group": "5_view@3"
         }
       ]
     },
@@ -256,13 +274,15 @@
         "sftpRemoteEditor.configFile": {
           "type": "string",
           "default": ".vscode/sftp.json",
-          "description": "Path (relative to the workspace folder, and inside it) to the SFTP config. Defaults to the same file used by Git SFTP Upload and the SFTP extension by Natizyskunk."
+          "description": "Path (relative to the workspace folder, and inside it) to the SFTP config. Defaults to the same file used by Git SFTP Upload and the SFTP extension by Natizyskunk.",
+          "scope": "resource"
         },
         "sftpRemoteEditor.idleDisconnectMinutes": {
           "type": "number",
           "default": 10,
           "minimum": 0,
-          "description": "Close a server connection after this many minutes without activity. It reconnects automatically when needed. 0 keeps connections open."
+          "description": "Close a server connection after this many minutes without activity. It reconnects automatically when needed. 0 keeps connections open.",
+          "scope": "resource"
         }
       }
     }

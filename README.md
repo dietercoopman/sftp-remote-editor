@@ -23,6 +23,7 @@ SFTP Remote Editor gives you the remote host view:
 - **Edit in place.** A file opens in a normal editor, with syntax highlighting, search and everything else. Save writes it to the server.
 - **No silent overwrites.** If someone changed the file on the server after you opened it, saving stops and you compare first.
 - **Permissions stay as they are.** A saved file keeps its owner and permissions. New files get the server's defaults.
+- **Production in red.** Give a server a color, and its icon, its editor tabs and the status bar show it. You always see which server you are editing.
 - **Your existing config.** Same `.vscode/sftp.json` as Git SFTP Upload and the SFTP extension by Natizyskunk, including profiles and multiple servers.
 - **SFTP, FTPS and FTP.** Password, private key or SSH agent for SFTP. Explicit or implicit TLS for FTPS.
 
@@ -45,6 +46,19 @@ VS Code checks the file on the server before it saves. When a colleague changed 
 With `"password": true` the password is asked when you connect and kept in memory for the session only. The first time you connect to a server, its SSH host key fingerprint is shown and must be confirmed before the password is sent. A key that later changes is refused.
 
 ![Password prompt and host key confirmation](images/marketplace/security.png)
+
+### Production in red
+
+Right-click a server › **Set Color...** and pick red, orange, yellow, green, blue or purple. The server icon in the panel, the tabs of its open files and the file names in the panel get that color, and the status bar names the server of the file you are editing, on a red background for red and a yellow one for orange and yellow. The color is stored as `"color": "red"` in `sftp.json`, per server or per profile, so the whole team sees production in red.
+
+```jsonc
+"profiles": {
+  "production": { "host": "acme-bakery.be", "color": "red" },
+  "staging": { "host": "staging.acme-bakery.be", "color": "green" }
+}
+```
+
+![A production server in red: its icon, its editor tab and the status bar, and the color picker](images/marketplace/colors.png)
 
 ### Next to your local project
 
@@ -73,7 +87,7 @@ A minimal `.vscode/sftp.json`:
 }
 ```
 
-Supported: `name`, `host`, `port`, `username`, `password`, `privateKeyPath`, `passphrase`, `agent`, `remotePath`, `context`, `connectTimeout`, `profiles`, and an array of configs. Each profile is shown as a separate server. `context` is the local folder that corresponds to `remotePath`, used by **Compare with Local File** and **Download to Project**.
+Supported: `name`, `host`, `port`, `username`, `password`, `privateKeyPath`, `passphrase`, `agent`, `remotePath`, `context`, `connectTimeout`, `color`, `profiles`, and an array of configs. Each profile is shown as a separate server. `context` is the local folder that corresponds to `remotePath`, used by **Compare with Local File** and **Download to Project**.
 
 Protocols:
 

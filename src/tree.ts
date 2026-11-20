@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { ConfigProblem, ServerConfig, ServerRegistry } from './config';
 import { ConnectionManager } from './connections';
+import { SERVER_COLORS } from './colors';
 import { remoteUri } from './fsProvider';
 import { RemoteEntry } from './remote';
 import { CancelledError, errorMessage, log } from './util';
@@ -102,7 +103,8 @@ export class ServersTreeProvider implements vscode.TreeDataProvider<TreeNode>, v
           `**${node.server.label}**\n\n${node.server.detail}\n\nRemote path: \`${node.server.remotePath}\`\n\n` +
             `Config: \`${vscode.workspace.asRelativePath(node.server.configPath)}\``
         );
-        item.iconPath = new vscode.ThemeIcon('server');
+        const color = node.server.color;
+        item.iconPath = new vscode.ThemeIcon('server', color ? new vscode.ThemeColor(SERVER_COLORS[color].theme) : undefined);
         item.contextValue = 'server';
         return item;
       }

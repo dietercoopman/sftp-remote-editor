@@ -5,6 +5,7 @@ import { configPathFor, ServerConfig, ServerRegistry } from './config';
 import { ConnectionManager } from './connections';
 import { RemoteFileSystemProvider, remoteUri, SCHEME } from './fsProvider';
 import { forgetTrustedHostKeys, initHostKeys } from './hostKeys';
+import { ServerColors } from './serverColors';
 import { directoryOf, ServersTreeProvider, TreeNode } from './tree';
 import { CancelledError, errorMessage, output } from './util';
 
@@ -16,6 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
   const registry = new ServerRegistry();
   const connections = new ConnectionManager();
   const provider = new RemoteFileSystemProvider(registry, connections);
+  const colors = new ServerColors(registry);
   tree = new ServersTreeProvider(registry, connections);
   view = vscode.window.createTreeView('sftpRemoteEditor.servers', { treeDataProvider: tree, showCollapseAll: true });
 
@@ -40,6 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
     output,
     registry,
     connections,
+    colors,
     tree,
     view,
     vscode.workspace.registerFileSystemProvider(SCHEME, provider, { isCaseSensitive: true }),
@@ -51,6 +54,9 @@ export function activate(context: vscode.ExtensionContext) {
       }
     }),
     command('sftpRemoteEditor.openConfig', openConfig),
+    command('sftpRemoteEditor.setColor', async (node) => {
+      if (node?.kind === 'server') await colors.pickColor(node.server);
+    }),
     command('sftpRemoteEditor.newFile', (node) => create(node, 'file')),
     command('sftpRemoteEditor.newFolder', (node) => create(node, 'folder')),
     command('sftpRemoteEditor.rename', rename),
