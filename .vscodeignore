@@ -13,3 +13,4 @@ test/**
 !media/activitybar.svg
 docs/**
 images/icon.svg
+.github/**

@@ -1,0 +1,54 @@
+name: Bug report
+description: A file does not open or save, or something does not work as described.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. **Never paste passwords, passphrases or private keys.** Found a security issue? Use [private reporting](https://github.com/dietercoopman/sftp-remote-editor/security/advisories/new) instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: dropdown
+    id: protocol
+    attributes:
+      label: Protocol
+      options:
+        - SFTP
+        - FTPS (explicit)
+        - FTPS (implicit)
+        - Plain FTP
+    validations:
+      required: true
+  - type: dropdown
+    id: auth
+    attributes:
+      label: Authentication
+      options:
+        - Password
+        - Private key
+        - SSH agent
+        - Not sure
+  - type: textarea
+    id: config
+    attributes:
+      label: sftp.json (credentials removed)
+      render: jsonc
+  - type: textarea
+    id: log
+    attributes:
+      label: Output panel log
+      description: View → Output → *SFTP Remote Editor*.
+      render: text
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Extension version, editor (VS Code, Cursor, VSCodium, ...) and version, operating system.
+      placeholder: 0.2.1, VS Code 1.106, macOS 26
+    validations:
+      required: true

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Marketplace listing: README with a rating badge, a "Get started in 30 seconds" section, a comparison with an FTP client, the SFTP extension and Remote - SSH, more FAQ, links to Git SFTP Upload and SFTP Folder Upload, and links to rate the extension. More search keywords. No functional changes.
+
 ## 0.2.0
 
 - **Server colors.** Give a server a color with **Set Color...** in the panel, or `"color": "red"` in sftp.json (per server or per profile): red, orange, yellow, green, blue or purple. Its icon, its editor tabs and file names get that color, and a status bar item names the server of the active editor, on a red background for red servers.
